@@ -40,7 +40,7 @@ var formSubmitHandler = function (event) {
 //   }
 // };
 
-var getUserRepos = function (user) {
+var getUserRepos = function (city) {
   var queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey;
 
   fetch(queryURL)
@@ -49,7 +49,7 @@ var getUserRepos = function (user) {
         console.log(response);
         response.json().then(function (data) {
           console.log(data);
-          displayRepos(data, user);
+          displayRepos(data, city);
         });
       } else {
         alert('Error: ' + response.statusText);
