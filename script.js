@@ -1,10 +1,19 @@
-var userFormEl = document.querySelector('#user-form');
-var languageButtonsEl = document.querySelector('#language-buttons');
+function initPage() {}
+  const userFormEl = document.querySelector('#user-form');
+  const languageButtonsEl = document.querySelector('#language-buttons');
 // var nameInputEl = document.querySelector('#username');
-var repoContainerEl = document.querySelector('#repos-container');
-var repoSearchTerm = document.querySelector('#repo-search-term');
-var APIKey = 'e35212b7055d130adb915956a5189fce';
-var city= document.querySelector('#username');
+  const repoContainerEl = document.querySelector('#repos-container');
+  const repoSearchTerm = document.querySelector('#repo-search-term');
+  const APIKey = 'e35212b7055d130adb915956a5189fce';
+  const city= document.querySelector('#username');
+  const currentPicEl = document.getElementById("current-pic");
+  const currentTempEl = document.getElementById("temperature");
+  const currentHumidityEl = document.getElementById("humidity");4
+  const currentWindEl = document.getElementById("wind-speed");
+  const currentUVEl = document.getElementById("UV-index");
+  const historyEl = document.getElementById("history");
+  let searchHistory = JSON.parse(localStorage.getItem("search")) || [];
+  console.log(searchHistory);
 // var queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey;
 
 
@@ -23,6 +32,7 @@ var formSubmitHandler = function (event) {
     alert('Please enter a city');
   }
 };
+
 
 // var buttonClickHandler = function (event) {
 //   // What is `event.target` referencing?
@@ -77,8 +87,8 @@ var getUserRepos = function (city) {
 //   });
 // };
 
-var displayRepos = function (repos, searchTerm) {
-  if (repos.length === 0) {
+var displayRepos = function (sCity, searchTerm) {
+  if (sCity.length === 0) {
     repoContainerEl.textContent = 'No weather found.';
     // What would happen if there was no `return;` here?
     // TODO: Write your answer here
@@ -88,11 +98,11 @@ var displayRepos = function (repos, searchTerm) {
 
   repoSearchTerm.textContent = searchTerm;
 
-  for (var i = 0; i < repos.length; i++) {
+  for (var i = 0; i < sCity.length; i++) {
     // What is the result of this string concatenation?
     // TODO: Write your answer here
     // Making new URL.
-    var repoName = repos[i].owner.login + '/' + repos[i].name;
+    // var repoName = repos[i].owner.login + '/' + repos[i].name;
 
     var repoEl = document.createElement('div');
     repoEl.classList = 'list-item flex-row justify-space-between align-center';
@@ -120,4 +130,4 @@ var displayRepos = function (repos, searchTerm) {
 
 userFormEl.addEventListener('submit', formSubmitHandler);
 // languageButtonsEl.addEventListener('click', buttonClickHandler);
-
+initPage();
