@@ -7,13 +7,13 @@ function initPage() {}
   const APIKey = 'e35212b7055d130adb915956a5189fce';
   const city= document.querySelector('#username');
   const currentPicEl = document.getElementById("current-pic");
-  const currentTempEl = document.getElementById("temperature");
-  const currentHumidityEl = document.getElementById("humidity");4
+  const currentTempEl = document.getElementById("#temperature");
+  const currentHumidityEl = document.getElementById("#humidity");
   const currentWindEl = document.getElementById("wind-speed");
   const currentUVEl = document.getElementById("UV-index");
   const historyEl = document.getElementById("history");
   let searchHistory = JSON.parse(localStorage.getItem("search")) || [];
-  console.log(searchHistory);
+  // console.log(searchHistory);
 // var queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey;
 
 
@@ -88,6 +88,7 @@ var getUserRepos = function (city) {
 // };
 
 var displayRepos = function (sCity, searchTerm) {
+  console.log(sCity);
   if (sCity.length === 0) {
     repoContainerEl.textContent = 'No weather found.';
     // What would happen if there was no `return;` here?
@@ -96,36 +97,41 @@ var displayRepos = function (sCity, searchTerm) {
     return;
   }
 
-  repoSearchTerm.textContent = searchTerm;
-
-  for (var i = 0; i < sCity.length; i++) {
+  // repoSearchTerm.textContent = searchTerm;
+console.log('sCity');
+  // for (var i = 0; i < sCity.length; i++) {
     // What is the result of this string concatenation?
     // TODO: Write your answer here
     // Making new URL.
     // var repoName = repos[i].owner.login + '/' + repos[i].name;
-
+// console.log(sCity[i]);
     var repoEl = document.createElement('div');
     repoEl.classList = 'list-item flex-row justify-space-between align-center';
 
     var titleEl = document.createElement('span');
-    titleEl.textContent = repoName;
+    repoContainerEl.textContent = sCity.main.temp;
+    
+    var humidity = document.createElement('span');
+    currentHumidityEl.textContent = sCity.main.humidity;
+   
 
     repoEl.appendChild(titleEl);
 
     var statusEl = document.createElement('span');
     statusEl.classList = 'flex-row align-center';
 
-    if (repos[i].open_issues_count > 0) {
-      statusEl.innerHTML =
-        "<i class='fas fa-times status-icon icon-danger'></i>" + repos[i].open_issues_count + ' issue(s)';
-    } else {
-      statusEl.innerHTML = "<i class='fas fa-check-square status-icon icon-success'></i>";
-    }
+    // if (repos[i].open_issues_count > 0) {
+    //   statusEl.innerHTML =
+    //     "<i class='fas fa-times status-icon icon-danger'></i>" + repos[i].open_issues_count + ' issue(s)';
+    // } else {
+    //   statusEl.innerHTML = "<i class='fas fa-check-square status-icon icon-success'></i>";
+    // }
 
+    currentHumidityEl.appendChild(humidity);
     repoEl.appendChild(statusEl);
 
     repoContainerEl.appendChild(repoEl);
-  }
+  // }
 };
 
 userFormEl.addEventListener('submit', formSubmitHandler);
