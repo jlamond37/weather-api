@@ -2,8 +2,8 @@ function initPage() {}
   const userFormEl = document.querySelector('#user-form');
   const languageButtonsEl = document.querySelector('#language-buttons');
 // var nameInputEl = document.querySelector('#username');
-  const repoContainerEl = document.querySelector('#repos-container');
-  const repoSearchTerm = document.querySelector('#repo-search-term');
+  const containerEl = document.querySelector('#container');
+  const citySearchTerm = document.querySelector('#city-search-term');
   const APIKey = 'e35212b7055d130adb915956a5189fce';
   const city= document.querySelector('#username');
   const currentPicEl = document.getElementById("current-pic");
@@ -21,12 +21,11 @@ function initPage() {}
 var formSubmitHandler = function (event) {
   event.preventDefault();
 
-  var username = city.value.trim();
+  var cityInput = city.value.trim();
 
-  if (username) {
-    getUserRepos(username);
-
-    repoContainerEl.textContent = '';
+  if (cityInput) {
+    getCurrentWeather(cityInput);
+    containerEl.textContent = '';
     city.value = '';
   } else {
     alert('Please enter a city');
@@ -50,26 +49,31 @@ var formSubmitHandler = function (event) {
 //   }
 // };
 
-var getUserRepos = function (city) {
+var getCurrentWeather = function (city) {
   var queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey;
-
   fetch(queryURL)
     .then(function (response) {
       if (response.ok) {
-        console.log(response);
-        response.json().then(function (data) {
-          console.log(data);
-          displayRepos(data, city);
-        });
+        console.log('response object is', response);
+        return response.json();
       } else {
         alert('Error: ' + response.statusText);
       }
     })
-    .catch(function (error) {
-      alert('Unable to connect to One Weather');
-    });
+    .then(function (data) {
+      console.log('data object is', data);
+      displayWeathertoPage(data);
+      // run aother function i.e. getUviData to fetch the UVI information
+      // getUviData(data.lat, data.long)
+    })
+    // .catch(function (error) {
+    //   alert('Unable to connect to One Weather');
+    // });
 };
 
+function getUviData (lat, long) {
+  // fetch the UVI information at another endpoint data/2.5/
+}
 // var getFeaturedRepos = function (language) {
 //   // What are the query parameters doing here?
 //   // TODO: Write your answer here
@@ -87,10 +91,19 @@ var getUserRepos = function (city) {
 //   });
 // };
 
-var displayRepos = function (sCity, searchTerm) {
-  console.log(sCity);
+var displayWeathertoPage = function (dataObject) {
+  // assign variables to the values of the object's properties
+  var temp = dataObject.main.temp;
+  var humidity = dataObject.main.humidity;
+  var windspeed = dataObject.wind.speed;
+  // var uvi = null;
+  currentTempEl.textContent=temp;
+  currentHumidityEl.textContent=humidity;
+  currentWindEl.textContent=windspeed;
+
+  console.log(temp);
   if (sCity.length === 0) {
-    repoContainerEl.textContent = 'No weather found.';
+    containerEl.textContent = 'No weather found.';
     // What would happen if there was no `return;` here?
     // TODO: Write your answer here
     //Ends function if no repositories.
@@ -109,7 +122,7 @@ console.log('sCity');
     repoEl.classList = 'list-item flex-row justify-space-between align-center';
 
     var titleEl = document.createElement('span');
-    repoContainerEl.textContent = sCity.main.temp;
+    containerEl.textContent = sCity.main.temp;
     
     var humidity = document.createElement('span');
     currentHumidityEl.textContent = sCity.main.humidity;
@@ -130,10 +143,11 @@ console.log('sCity');
     currentHumidityEl.appendChild(humidity);
     repoEl.appendChild(statusEl);
 
-    repoContainerEl.appendChild(repoEl);
+    containerEl.appendChild(repoEl);
   // }
 };
 
 userFormEl.addEventListener('submit', formSubmitHandler);
 // languageButtonsEl.addEventListener('click', buttonClickHandler);
+
 initPage();
