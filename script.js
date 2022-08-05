@@ -1,20 +1,16 @@
-function initPage() {}
-  const userFormEl = document.querySelector('#user-form');
-  const languageButtonsEl = document.querySelector('#language-buttons');
-// var nameInputEl = document.querySelector('#username');
-  const containerEl = document.querySelector('#container');
-  const citySearchTerm = document.querySelector('#city-search-term');
-  const APIKey = 'e35212b7055d130adb915956a5189fce';
-  const city= document.querySelector('#city');
-  const currentPicEl = document.getElementById("current-pic");
-  const currentTempEl = document.getElementById("#temperature");
-  const currentHumidityEl = document.getElementById("#humidity");
-  const currentWindEl = document.getElementById("wind-speed");
-  const currentUVEl = document.getElementById("UV-index");
-  const historyEl = document.getElementById("history");
-  let searchHistory = JSON.parse(localStorage.getItem("search")) || [];
- 
 
+  var userFormEl = document.querySelector('#user-form');
+  var languageButtonsEl = document.querySelector('#language-buttons');
+  var containerEl = document.querySelector('#container');
+  var citySearchTerm = document.querySelector('#city-search-term');
+  var APIKey = 'e35212b7055d130adb915956a5189fce';
+  var city= document.querySelector('#city');
+  var currentPicEl = document.getElementById("current-pic");
+  var currentTempEl = document.getElementById("temperature");
+  var currentHumidityEl = document.getElementById("humidity");
+  var currentWindEl = document.getElementById("wind-speed");
+  var currentUVEl = document.getElementById("UV-index");
+ 
 
 
 var formSubmitHandler = function (event) {
@@ -24,7 +20,7 @@ var formSubmitHandler = function (event) {
 
   if (cityInput) {
     getCurrentWeather(cityInput);
-    containerEl.textContent = '';
+    // containerEl.textContent = '';
     city.value = '';
   } else {
     alert('Please enter a city');
@@ -32,10 +28,9 @@ var formSubmitHandler = function (event) {
 };
 
 
-
-var getCurrentWeather = function (city) {
+var getCurrentWeather = async function (city) {
   var queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey;
-  fetch(queryURL)
+  await fetch(queryURL)
     .then(function (response) {
       if (response.ok) {
         console.log('response object is', response);
@@ -46,45 +41,59 @@ var getCurrentWeather = function (city) {
     })
     .then(function (data) {
       console.log('data object is', data);
-      displayWeathertoPage(data);
-      // run aother function i.e. getUviData to fetch the UVI information
-      // getUviData(data.lat, data.long)
+      let lat = data.coord.lat;
+      let lon = data.coord.lon;
+      var myString = "Hello JUliet";
+      let uvidata = getUviData(lat, lon);
+      displayWeathertoPage(data, uvidata, myString);
     })
-    // .catch(function (error) {
-    //   alert('Unable to connect to One Weather');
-    // });
+ 
 };
 
-function getUviData (lat, long) {
-  // fetch the UVI information at another endpoint data/2.5/
-}
-
-
-var displayWeathertoPage = function (dataObject) {
+var displayWeathertoPage = function (dataObject, param2, param3) {
   // assign variables to the values of the object's properties
+  console.log(param3);
   var temp = dataObject.main.temp;
   var humidity = dataObject.main.humidity;
   var windspeed = dataObject.wind.speed;
   // var uvi = null;
-  currentTempEl.textContent=temp;
+  currentTempEl.textContent = temp;
   currentHumidityEl.textContent=humidity;
   currentWindEl.textContent=windspeed;
-
-  console.log(temp);
-  if (city.length === 0) {
-    containerEl.textContent = 'No weather found.';
+  currentUVEl.textContent=param2;
+  // if (city.length === 0) {
+  //   containerEl.textContent = 'No weather found.';
    
-    return;
-  }
-  
-   
-    currentHumidityEl.appendChild(humidity);
+  //   return;
+  // }
     
+};
 
+async function getUviData (lat, lon) {
+  let uvidata = null;
+  var uviURL = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&appid=" + APIKey;
+    await fetch(uviURL)
+      .then(function (response) {
+        if (response.ok) {
+          return response.json();
+        } else {
+          alert('Error:' + response.statusText);
+        }
+      })
+      .then(function (data) {
+        uvidata=data.current.uvi;
 
+      })
+      return uvidata;
+};
+
+var displayUVItoPage = function (dataObject) {
+  var lat = dataObject.coord.lat;
+  var lon = dataObject.coord.lon;
+  currentUVEl.textContent='';
 };
 
 userFormEl.addEventListener('submit', formSubmitHandler);
 
 
-initPage();
+
